@@ -11,28 +11,168 @@ def opcode_00(machineState: dict):
         exit()
 
 def opcode_01(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA Indirect X 2 6
+    data = machineState["RAM"][machineState["ROM"][machineState["PC"] + 1] + machineState["X"]]
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
 
 def opcode_05(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA ZP 2 6
+    data = machineState["RAM"][machineState["ROM"][machineState["PC"] + 1]]
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
 def opcode_06(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ASL ZP 2 5
+    address = machineState["ROM"][machineState["PC"] + 1]
+    machineState["RAM"][address] *= 2
+
+    if machineState["RAM"][address] > 0xff: #carry flag
+        machineState["RAM"][address] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["RAM"][address] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["RAM"][address] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Shifted {hex(address)} left once (now {machineState['RAM'][address]})")
+
+    machineState["PC"] + 2
 
 def opcode_08(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #PHP Implied 1 3
+    #stack operation: write to 0x0100 + SP, dec SP
+    address = 0x0100 + machineState["SP"]
+    machineState["RAM"][address] = machineState["FLAGS"]
+    machineState["SP"] -= 1
+
+    if config.VERBOSE:
+        print(f"Pushed processor flags ({bin(machineState['FLAGS'])} to stack)")
+    
+    machineState["PC"] += 1
 
 def opcode_09(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA IMM 2 2
+    data = machineState["ROM"][machineState["PC"] + 1]
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] + 2
 
 def opcode_0a(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ASL accum 1 2
+    machineState["ACC"] *= 2
+
+    if machineState["ACC"] > 0xff: #carry flag
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Shifted acc left once (now {machineState['ACC']})")
+
+    machineState["PC"] + 1
 
 def opcode_0d(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA ABS 3 4
+    address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
+    data = machineState["RAM"][address]
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
 def opcode_0e(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ASL ABS 3 6
+    address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
+    machineState["RAM"][address] *= 2
+        
+    if machineState["ACC"] > 0xff: #carry flag
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Shifted {hex(address)} left once (now {machineState['ACC']})")
+
 
 
 def opcode_10(machineState: dict):
@@ -182,7 +322,32 @@ def opcode_61(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_65(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ADC (ZP) 2 3
+    data = machineState["RAM"][machineState["ROM"][machineState["PC"]+1]]
+    machineState["ACC"] += data
+
+    if machineState["ACC"] > 0xff: #carry flag
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"{hex(data)} added to ACC (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
+
+
 
 def opcode_66(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -194,9 +359,22 @@ def opcode_69(machineState: dict):
     #ADC IMM 2 2
     data = machineState["ROM"][machineState["PC"]+1]
     machineState["ACC"] += data
-    if machineState["ACC"] > 0xff:
+
+    if machineState["ACC"] > 0xff: #carry flag
         machineState["ACC"] -= 0x100
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"{hex(data)} added to ACC (now {hex(machineState['ACC'])})")
@@ -248,7 +426,15 @@ def opcode_84(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_85(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #STA (ZP) 2 3
+    data = machineState["ACC"]
+    location = machineState["ROM"][machineState["PC"]+1]    
+    machineState["RAM"][location] = data
+
+    if config.VERBOSE:
+        print(f"Set memory at {hex(location)} to {hex(data)}")
+    
+    machineState["PC"] += 2
 
 def opcode_86(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")

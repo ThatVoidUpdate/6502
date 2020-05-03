@@ -14,7 +14,7 @@ machineState = {"ROM":[],
                 "Y": 0x00,
                 "ACC": 0x00,
                 "FLAGS": 0b00000000,
-                "SP": 0x0}
+                "SP": 0xFF}
 
 
 with open("rom.bin", "rb") as romFile:
