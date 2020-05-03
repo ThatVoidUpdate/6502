@@ -1,480 +1,518 @@
+import config
+
 def FromHex(hexa: bytes) -> int:
     return int.from_bytes(hexa, byteorder="little")
 
+
 def opcode_00(machineState: dict):
-    pass
+    #BRK Implied 1 7
+    if config.VERBOSE:
+        print("BRK hit, exiting")
+        exit()
 
 def opcode_01(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_05(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_06(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_08(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_09(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_0a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_0d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_0e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_10(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_11(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_15(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_16(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_18(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_19(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_1d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_1e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_20(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_21(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_24(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_25(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_26(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_28(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_29(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_2a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_2c(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_2d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_2e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_30(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_31(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_35(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_36(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_38(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_39(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_3d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_3e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_40(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_41(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_45(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_46(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_48(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_49(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_4a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_4c(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_4d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_4e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_50(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_51(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_55(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_56(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_58(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_59(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_5d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_5e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_60(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_61(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_65(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_66(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_68(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_69(machineState: dict):
-    pass
+    #ADC IMM 2 2
+    data = machineState["ROM"][machineState["PC"]+1]
+    machineState["ACC"] += data
+    if machineState["ACC"] > 0xff:
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+
+    if config.VERBOSE:
+        print(f"{hex(data)} added to ACC (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
 
 def opcode_6a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_6c(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_6d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_6e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_70(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_71(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_75(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_76(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_78(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_79(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_7d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_7e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_81(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_84(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_85(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_86(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_88(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_8a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_8c(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_8d(machineState: dict):
     #STA ABS 3 4
     address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
     machineState["RAM"][address] = machineState["ACC"]
     machineState["PC"] += 3
-    print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
+    if config.VERBOSE:
+        print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
 
 def opcode_8e(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_90(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_91(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_94(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_95(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_96(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_98(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_99(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_9a(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_9d(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_a0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a2(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a4(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a8(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a9(machineState: dict):
     # LDA IMM 2 2
-    machineState["ACC"] = machineState["ROM"][machineState["PC"]+1]
+    data = machineState["ROM"][machineState["PC"]+1]
+    machineState["ACC"] = data
+    
+    if config.VERBOSE:
+        print(f"Loaded {hex(data)} into ACC")
+
     machineState["PC"] += 2
 
 def opcode_aa(machineState: dict):
-    pass
+    #TAX Implied 1 2
+    data = machineState["ACC"]
+    machineState["X"] = data
+
+    if config.VERBOSE:
+        print(f"Set X to ACC ({hex(data)})")
+
+    machineState["PC"] += 1
 
 def opcode_ac(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ad(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ae(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_b0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b4(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b8(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_b9(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ba(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_bc(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_bd(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_be(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_c0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c4(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c8(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c9(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ca(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_cc(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_cd(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ce(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_d0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_d1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_d5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_d6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_d8(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_d9(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_dd(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_de(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_e0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_e1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_e4(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_e5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_e6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_e8(machineState: dict):
-    pass
+    #INX Implied 1 2
+    machineState["X"] += 1
+
+    if config.VERBOSE:
+        print(f"Incremented X (to {hex(machineState['X'])})")
+
+    machineState["PC"] += 1
 
 def opcode_e9(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ea(machineState: dict):
     #NOP implied 1 2
-    return
+    if config.VERBOSE:
+        print("NOP")
+
+    machineState["PC"] += 1
 
 def opcode_ec(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ed(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_ee(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 
 def opcode_f0(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_f1(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_f5(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_f6(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_f8(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_f9(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_fd(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_fe(machineState: dict):
-    pass
+    print("INSTRUCTION NOT IMPLEMENTED")
 
 switch_table = {
     0x00: opcode_00,

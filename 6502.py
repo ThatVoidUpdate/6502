@@ -12,7 +12,9 @@ machineState = {"ROM":[],
                 "PC":0x00,
                 "X": 0x00,
                 "Y": 0x00,
-                "ACC": 0x00}
+                "ACC": 0x00,
+                "FLAGS": 0b00000000,
+                "SP": 0x0}
 
 
 with open("rom.bin", "rb") as romFile:
@@ -31,7 +33,8 @@ print(f"Reset vector: {machineState['PC']}")
 
 while True:
     instruction = machineState["ROM"][machineState["PC"]]
-    print(hex(instruction))
+    #print(hex(instruction))
 
     if instruction in instructions.switch_table:
         instructions.switch_table[instruction](machineState)
+        input()
