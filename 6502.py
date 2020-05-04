@@ -38,7 +38,7 @@ screen = display.Display()
 while True:
     instruction = machineState["MEMORY"][machineState["PC"]]
 
-    print(hex(instruction))
+    #print(hex(instruction))
 
     if instruction in instructions.switch_table:
         instructions.switch_table[instruction](machineState)
