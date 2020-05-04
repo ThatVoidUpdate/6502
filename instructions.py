@@ -28,6 +28,8 @@ def opcode_01(machineState: dict):
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
+    machineState["PC"] += 2
+
 
 def opcode_05(machineState: dict):
     #ORA ZP 2 6
@@ -46,6 +48,8 @@ def opcode_05(machineState: dict):
 
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+    
+    machineState["PC"] += 2
 
 def opcode_06(machineState: dict):
     #ASL ZP 2 5
@@ -71,7 +75,7 @@ def opcode_06(machineState: dict):
     if config.VERBOSE:
         print(f"Shifted {hex(address)} left once (now {machineState['RAM'][address]})")
 
-    machineState["PC"] + 2
+    machineState["PC"] += 2
 
 def opcode_08(machineState: dict):
     #PHP Implied 1 3
@@ -103,7 +107,7 @@ def opcode_09(machineState: dict):
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
-    machineState["PC"] + 2
+    machineState["PC"] += 2
 
 def opcode_0a(machineState: dict):
     #ASL accum 1 2
@@ -128,7 +132,7 @@ def opcode_0a(machineState: dict):
     if config.VERBOSE:
         print(f"Shifted acc left once (now {machineState['ACC']})")
 
-    machineState["PC"] + 1
+    machineState["PC"] += 1
 
 def opcode_0d(machineState: dict):
     #ORA ABS 3 4
@@ -148,6 +152,8 @@ def opcode_0d(machineState: dict):
 
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+    
+    machineState["PC"] += 3
 
 def opcode_0e(machineState: dict):
     #ASL ABS 3 6
@@ -172,11 +178,27 @@ def opcode_0e(machineState: dict):
 
     if config.VERBOSE:
         print(f"Shifted {hex(address)} left once (now {machineState['ACC']})")
+    
+    machineState["PC"] += 3
 
 
 
 def opcode_10(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #BPL Relative 2 2
+    #if negative flag clear, add offset to PC and resume execution
+    if machineState["FLAGS"] & 0b10000000 == 0b00000000:
+        offset = machineState["ROM"][machineState["PC"] + 1]
+        if offset & 0b10000000 == 0b10000000:
+            #offset is negative
+            decOffset = offset - 256
+        else:
+            decOffset = offset
+        machineState["PC"] += decOffset + 1
+        if config.VERBOSE:
+            print(f"Jumped to {hex(machineState['PC'])} because negative flag was clear")
+    else:
+        machineState["PC"] += 2
+        print(f"Hit jump, but didnt jump because negative flag was not clear")
 
 def opcode_11(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -455,6 +477,8 @@ def opcode_8d(machineState: dict):
     machineState["PC"] += 3
     if config.VERBOSE:
         print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
+    
+    machineState["PC"] += 3
 
 def opcode_8e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")

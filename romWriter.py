@@ -6,7 +6,7 @@ with open("rom.bin", "wb") as output:
         
         rom.append(bytes((0xea,)))
 
-    program = [0xa9, 0x80, 0x85, 0x01, 0x65, 0x01, 0x00]
+    program = [0xa9, 0x01, 0x0a, 0x10, 0xfd, 0x00]
     
     print(bytes(program))
 
@@ -18,3 +18,4 @@ with open("rom.bin", "wb") as output:
     print(rom[:10])
 
     output.write(b''.join(rom))
+    print("Wrote file successfully")

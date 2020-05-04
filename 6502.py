@@ -33,8 +33,9 @@ print(f"Reset vector: {machineState['PC']}")
 
 while True:
     instruction = machineState["ROM"][machineState["PC"]]
+    
     #print(hex(instruction))
 
     if instruction in instructions.switch_table:
         instructions.switch_table[instruction](machineState)
-        input()
+    #input()
