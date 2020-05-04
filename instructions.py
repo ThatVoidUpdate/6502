@@ -435,7 +435,16 @@ def opcode_46(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_48(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #PHA IMPLIED 1 3
+    address = 0x0100 + machineState["SP"]
+    machineState["MEMORY"][address] = machineState["ACC"]
+    machineState["SP"] -= 1
+
+    if config.VERBOSE:
+        print(f"Pushed accumulator ({bin(machineState['ACC'])} to stack)")
+    
+    machineState["PC"] += 1
+
 
 def opcode_49(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -516,7 +525,19 @@ def opcode_66(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_68(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #PLA IMPLIED 1 4
+
+
+    machineState["SP"] += 1
+    address = 0x0100 + machineState["SP"]
+    machineState["ACC"] = machineState["MEMORY"][address]
+
+    if config.VERBOSE:
+        print(f"Pulled stack to accumulator ({bin(machineState['ACC'])})")
+    
+    machineState["PC"] += 1
+
+
 
 def opcode_69(machineState: dict):
     #ADC IMM 2 2
@@ -606,7 +627,23 @@ def opcode_88(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_8a(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #TXA Implied 1 2
+    machineState["ACC"] = machineState["X"]
+
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Moved X ({hex(machineState['X'])}) to ACC")
+
+    machineState["PC"] += 1
 
 def opcode_8c(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -644,7 +681,16 @@ def opcode_98(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_99(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #STA ABS,Y 3 5
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["Y"]
+
+    machineState["MEMORY"][address] = machineState["ACC"]
+
+    if config.VERBOSE:
+        print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
+    
+    machineState["PC"] += 3
+
 
 def opcode_9a(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -654,13 +700,47 @@ def opcode_9d(machineState: dict):
 
 
 def opcode_a0(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #LDY IMM 2 2
+    data = machineState["MEMORY"][machineState["PC"] + 1]
+    machineState["Y"] = data
+        
+    if machineState["Y"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["Y"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Loaded {hex(data)} into Y")
+    
+    machineState["PC"] += 2
 
 def opcode_a1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_a2(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #LDX IMM 2 2
+    data = machineState["MEMORY"][machineState["PC"] + 1]
+    machineState["X"] = data
+
+    if machineState["X"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["X"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Loaded {hex(data)} into X")
+    
+    machineState["PC"] += 2
 
 def opcode_a4(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -739,7 +819,28 @@ def opcode_be(machineState: dict):
 
 
 def opcode_c0(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #CPY IMM 2 2
+    data = machineState["MEMORY"][machineState["PC"] + 1]
+
+    if machineState["Y"] >= data:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+
+    if machineState["Y"] == data:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if (machineState["Y"] - data) & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Compared Y ({hex(machineState['Y'])}) to {hex(data)}")
+
+    machineState["PC"] += 2
 
 def opcode_c1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -754,7 +855,26 @@ def opcode_c6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
 
 def opcode_c8(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #INY IMPLIED 1 2
+    machineState["Y"] += 1
+
+    if machineState["Y"] > 0xff:
+        machineState["Y"] -= 0x100
+
+    if machineState["Y"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["Y"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Incremented Y (to {hex(machineState['Y'])})")
+
+    machineState["PC"] += 1
 
 def opcode_c9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -773,7 +893,22 @@ def opcode_ce(machineState: dict):
 
 
 def opcode_d0(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #BNE Relative 2 2
+
+    if machineState["FLAGS"] & 0b00000010 == 0b00000000:
+        offset = machineState["MEMORY"][machineState["PC"] + 1]
+        if offset & 0b10000000 == 0b10000000:
+            #offset is negative
+            decOffset = offset - 256
+        else:
+            decOffset = offset
+        machineState["PC"] += decOffset + 2
+        if config.VERBOSE:
+            print(f"Jumped to {hex(machineState['PC'])} because zero flag was clear")
+    else:
+        machineState["PC"] += 2
+        print(f"Hit jump, but didnt jump because zero flag was not clear")
+
 
 def opcode_d1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -815,6 +950,19 @@ def opcode_e6(machineState: dict):
 def opcode_e8(machineState: dict):
     #INX Implied 1 2
     machineState["X"] += 1
+
+    if machineState["X"] > 0xff:
+        machineState["X"] -= 0x100
+
+    if machineState["X"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["X"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Incremented X (to {hex(machineState['X'])})")
