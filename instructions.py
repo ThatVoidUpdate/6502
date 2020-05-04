@@ -18,14 +18,14 @@ def opcode_01(machineState: dict):
     newAddress = FromHex(bytes(finalAddressHighByte, finalAddressLowByte))
     data = machineState["MEMORY"][newAddress]
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -39,20 +39,20 @@ def opcode_05(machineState: dict):
     #ORA ZP 2 6
     data = machineState["MEMORY"][machineState["MEMORY"][machineState["PC"] + 1]]
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
-    
+
     machineState["PC"] += 2
 
 def opcode_06(machineState: dict):
@@ -65,14 +65,14 @@ def opcode_06(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["MEMORY"][address] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["MEMORY"][address] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -90,21 +90,21 @@ def opcode_08(machineState: dict):
 
     if config.VERBOSE:
         print(f"Pushed processor flags ({bin(machineState['FLAGS'])} to stack)")
-    
+
     machineState["PC"] += 1
 
 def opcode_09(machineState: dict):
     #ORA IMM 2 2
     data = machineState["MEMORY"][machineState["PC"] + 1]
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -122,14 +122,14 @@ def opcode_0a(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -143,20 +143,20 @@ def opcode_0d(machineState: dict):
     address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
     data = machineState["MEMORY"][address]
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
-    
+
     machineState["PC"] += 3
 
 def opcode_0e(machineState: dict):
@@ -164,26 +164,26 @@ def opcode_0e(machineState: dict):
     address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
 
     machineState["MEMORY"][address] *= 2
-        
+
     if machineState["ACC"] > 0xff: #carry flag
         machineState["ACC"] -= 0x100
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Shifted {hex(address)} left once (now {machineState['ACC']})")
-    
+
     machineState["PC"] += 3
 
 
@@ -215,14 +215,14 @@ def opcode_11(machineState: dict):
     data = machineState["MEMORY"][newAddress]
 
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -236,16 +236,16 @@ def opcode_15(machineState: dict):
 
     address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
     data = machineState["MEMORY"][address]
-    
+
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -260,26 +260,26 @@ def opcode_16(machineState: dict):
     address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
 
     machineState["MEMORY"][address] *= 2
-        
+
     if machineState["ACC"] > 0xff: #carry flag
         machineState["ACC"] -= 0x100
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Shifted {hex(address)} left once (now {machineState['MEMORY'][address]})")
-    
+
     machineState["PC"] += 2
 
 def opcode_18(machineState: dict):
@@ -297,14 +297,14 @@ def opcode_19(machineState: dict):
     data = machineState["MEMORY"][address]
 
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -319,14 +319,14 @@ def opcode_1d(machineState: dict):
     data = machineState["MEMORY"][address]
 
     machineState["ACC"] = machineState["ACC"] | data
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -340,26 +340,26 @@ def opcode_1e(machineState: dict):
     address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
 
     machineState["MEMORY"][address] *= 2
-        
+
     if machineState["ACC"] > 0xff: #carry flag
         machineState["ACC"] -= 0x100
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Shifted {hex(address)} left once (now {machineState['MEMORY'][address]})")
-    
+
     machineState["PC"] += 3
 
 
@@ -442,7 +442,7 @@ def opcode_48(machineState: dict):
 
     if config.VERBOSE:
         print(f"Pushed accumulator ({bin(machineState['ACC'])} to stack)")
-    
+
     machineState["PC"] += 1
 
 
@@ -503,14 +503,14 @@ def opcode_65(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -534,7 +534,7 @@ def opcode_68(machineState: dict):
 
     if config.VERBOSE:
         print(f"Pulled stack to accumulator ({bin(machineState['ACC'])})")
-    
+
     machineState["PC"] += 1
 
 
@@ -549,14 +549,14 @@ def opcode_69(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
-        
+
     if machineState["ACC"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -612,12 +612,12 @@ def opcode_84(machineState: dict):
 def opcode_85(machineState: dict):
     #STA (ZP) 2 3
     data = machineState["ACC"]
-    location = machineState["MEMORY"][machineState["PC"]+1]    
+    location = machineState["MEMORY"][machineState["PC"]+1]
     machineState["MEMORY"][location] = data
 
     if config.VERBOSE:
         print(f"Set memory at {hex(location)} to {hex(data)}")
-    
+
     machineState["PC"] += 2
 
 def opcode_86(machineState: dict):
@@ -636,7 +636,7 @@ def opcode_8a(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -655,7 +655,7 @@ def opcode_8d(machineState: dict):
     machineState["PC"] += 3
     if config.VERBOSE:
         print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
-    
+
     machineState["PC"] += 3
 
 def opcode_8e(machineState: dict):
@@ -688,7 +688,7 @@ def opcode_99(machineState: dict):
 
     if config.VERBOSE:
         print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
-    
+
     machineState["PC"] += 3
 
 
@@ -703,20 +703,20 @@ def opcode_a0(machineState: dict):
     #LDY IMM 2 2
     data = machineState["MEMORY"][machineState["PC"] + 1]
     machineState["Y"] = data
-        
+
     if machineState["Y"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["Y"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Loaded {hex(data)} into Y")
-    
+
     machineState["PC"] += 2
 
 def opcode_a1(machineState: dict):
@@ -733,13 +733,13 @@ def opcode_a2(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["X"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
         print(f"Loaded {hex(data)} into X")
-    
+
     machineState["PC"] += 2
 
 def opcode_a4(machineState: dict):
@@ -758,7 +758,7 @@ def opcode_a9(machineState: dict):
     # LDA IMM 2 2
     data = machineState["MEMORY"][machineState["PC"]+1]
     machineState["ACC"] = data
-    
+
     if config.VERBOSE:
         print(f"Loaded {hex(data)} into ACC")
 
@@ -833,7 +833,7 @@ def opcode_c0(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if (machineState["Y"] - data) & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -867,7 +867,7 @@ def opcode_c8(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["Y"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -960,7 +960,7 @@ def opcode_e8(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
     if machineState["X"] & 0b10000000 == 0b10000000: #negative flag
-        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
@@ -1093,7 +1093,7 @@ switch_table = {
     0x79: opcode_79,
     0x7d: opcode_7d,
     0x7e: opcode_7e,
-        
+
     0x81: opcode_81,
     0x84: opcode_84,
     0x85: opcode_85,

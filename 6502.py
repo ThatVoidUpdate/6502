@@ -1,4 +1,5 @@
 import instructions
+import display
 
 def FromHex(hexa: bytes) -> int:
     return int.from_bytes(hexa, byteorder="little")
@@ -35,11 +36,16 @@ machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2]
 
 print(f"Reset vector: {hex(machineState['PC'])}")
 
+screen = display.Display()
+
 while True:
     instruction = machineState["MEMORY"][machineState["PC"]]
-    
+
     #print(hex(instruction))
 
     if instruction in instructions.switch_table:
         instructions.switch_table[instruction](machineState)
+
+    screen.UpdateScreen(machineState)
+
     #input()
