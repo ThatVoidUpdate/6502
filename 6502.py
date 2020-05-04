@@ -20,8 +20,6 @@ machineState = {"MEMORY":[0x0]*0x10000,
 with open("rom.bin", "rb") as romFile:
     rom = romFile.read()
 
-#print(hex(len(machineState["rom"])))
-
 #verify rom is correct
 if len(rom) != 0x8000:
     print("Rom has an invalid length")
@@ -30,7 +28,6 @@ if len(rom) != 0x8000:
 machineState["MEMORY"][0x8000:] = rom
 
 print(hex(len(rom)))
-#print(machineState["MEMORY"][0xff00:0xffff])
 
 machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2])
 
@@ -41,7 +38,7 @@ screen = display.Display()
 while True:
     instruction = machineState["MEMORY"][machineState["PC"]]
 
-    #print(hex(instruction))
+    print(hex(instruction))
 
     if instruction in instructions.switch_table:
         instructions.switch_table[instruction](machineState)

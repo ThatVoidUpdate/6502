@@ -8,7 +8,9 @@ def opcode_00(machineState: dict):
     #BRK Implied 1 7
     if config.VERBOSE:
         print("BRK hit, exiting")
-        exit()
+    if config.INPUT_ON_BRK:
+        input()
+    exit()
 
 def opcode_01(machineState: dict):
     #ORA (IND, X) 2 6
@@ -365,74 +367,97 @@ def opcode_1e(machineState: dict):
 
 def opcode_20(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_21(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_24(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_25(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_26(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_28(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_29(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_2a(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_2c(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_2d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_2e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_30(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_31(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_35(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_36(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_38(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_39(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_3d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_3e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_40(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_41(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_45(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_46(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_48(machineState: dict):
     #PHA IMPLIED 1 3
@@ -448,50 +473,65 @@ def opcode_48(machineState: dict):
 
 def opcode_49(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_4a(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_4c(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_4d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_4e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_50(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_51(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_55(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_56(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_58(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_59(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_5d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_5e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_60(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_61(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_65(machineState: dict):
     #ADC (ZP) 2 3
@@ -523,6 +563,7 @@ def opcode_65(machineState: dict):
 
 def opcode_66(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_68(machineState: dict):
     #PLA IMPLIED 1 4
@@ -567,47 +608,61 @@ def opcode_69(machineState: dict):
 
 def opcode_6a(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_6c(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_6d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_6e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_70(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_71(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_75(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_76(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_78(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_79(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_7d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_7e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_81(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_84(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_85(machineState: dict):
     #STA (ZP) 2 3
@@ -622,9 +677,11 @@ def opcode_85(machineState: dict):
 
 def opcode_86(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_88(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_8a(machineState: dict):
     #TXA Implied 1 2
@@ -647,6 +704,7 @@ def opcode_8a(machineState: dict):
 
 def opcode_8c(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_8d(machineState: dict):
     #STA ABS 3 4
@@ -660,25 +718,48 @@ def opcode_8d(machineState: dict):
 
 def opcode_8e(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_90(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_91(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_94(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_95(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_96(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_98(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #TYA IMPLIED 1 2
+    machineState["ACC"] = machineState["Y"]
+
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Moved Y ({hex(machineState['Y'])}) to ACC")
+    
+    machineState["PC"] += 1
+
 
 def opcode_99(machineState: dict):
     #STA ABS,Y 3 5
@@ -694,9 +775,11 @@ def opcode_99(machineState: dict):
 
 def opcode_9a(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_9d(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_a0(machineState: dict):
@@ -721,6 +804,7 @@ def opcode_a0(machineState: dict):
 
 def opcode_a1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_a2(machineState: dict):
     #LDX IMM 2 2
@@ -744,15 +828,19 @@ def opcode_a2(machineState: dict):
 
 def opcode_a4(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_a5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_a6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_a8(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_a9(machineState: dict):
     # LDA IMM 2 2
@@ -776,46 +864,60 @@ def opcode_aa(machineState: dict):
 
 def opcode_ac(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ad(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ae(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_b0(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b4(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b8(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_b9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ba(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_bc(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_bd(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_be(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_c0(machineState: dict):
@@ -844,15 +946,19 @@ def opcode_c0(machineState: dict):
 
 def opcode_c1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_c4(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_c5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_c6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_c8(machineState: dict):
     #INY IMPLIED 1 2
@@ -878,18 +984,23 @@ def opcode_c8(machineState: dict):
 
 def opcode_c9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ca(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_cc(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_cd(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ce(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_d0(machineState: dict):
@@ -912,40 +1023,52 @@ def opcode_d0(machineState: dict):
 
 def opcode_d1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_d5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_d6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_d8(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_d9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_dd(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_de(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_e0(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_e1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_e4(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_e5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_e6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_e8(machineState: dict):
     #INX Implied 1 2
@@ -971,6 +1094,7 @@ def opcode_e8(machineState: dict):
 
 def opcode_e9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ea(machineState: dict):
     #NOP implied 1 2
@@ -981,37 +1105,48 @@ def opcode_ea(machineState: dict):
 
 def opcode_ec(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ed(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_ee(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 
 def opcode_f0(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_f1(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_f5(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_f6(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_f8(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_f9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_fd(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 def opcode_fe(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
+    input()
 
 switch_table = {
     0x00: opcode_00,

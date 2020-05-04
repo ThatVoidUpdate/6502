@@ -1,1 +1,2 @@
 VERBOSE = True
+INPUT_ON_BRK = True
