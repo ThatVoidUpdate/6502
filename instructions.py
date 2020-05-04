@@ -11,8 +11,12 @@ def opcode_00(machineState: dict):
         exit()
 
 def opcode_01(machineState: dict):
-    #ORA Indirect X 2 6
-    data = machineState["RAM"][machineState["ROM"][machineState["PC"] + 1] + machineState["X"]]
+    #ORA (IND, X) 2 6
+    address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
+    finalAddressLowByte = machineState["MEMORY"][address]
+    finalAddressHighByte = machineState["MEMORY"][address+1]
+    newAddress = FromHex(bytes(finalAddressHighByte, finalAddressLowByte))
+    data = machineState["MEMORY"][newAddress]
     machineState["ACC"] = machineState["ACC"] | data
         
     if machineState["ACC"] == 0x0: #zero flag
@@ -33,7 +37,7 @@ def opcode_01(machineState: dict):
 
 def opcode_05(machineState: dict):
     #ORA ZP 2 6
-    data = machineState["RAM"][machineState["ROM"][machineState["PC"] + 1]]
+    data = machineState["MEMORY"][machineState["MEMORY"][machineState["PC"] + 1]]
     machineState["ACC"] = machineState["ACC"] | data
         
     if machineState["ACC"] == 0x0: #zero flag
@@ -53,27 +57,27 @@ def opcode_05(machineState: dict):
 
 def opcode_06(machineState: dict):
     #ASL ZP 2 5
-    address = machineState["ROM"][machineState["PC"] + 1]
-    machineState["RAM"][address] *= 2
+    address = machineState["MEMORY"][machineState["PC"] + 1]
+    machineState["MEMORY"][address] *= 2
 
-    if machineState["RAM"][address] > 0xff: #carry flag
-        machineState["RAM"][address] -= 0x100
+    if machineState["MEMORY"][address] > 0xff: #carry flag
+        machineState["MEMORY"][address] -= 0x100
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
         
-    if machineState["RAM"][address] == 0x0: #zero flag
+    if machineState["MEMORY"][address] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
 
-    if machineState["RAM"][address] & 0b10000000 == 0b10000000: #negative flag
+    if machineState["MEMORY"][address] & 0b10000000 == 0b10000000: #negative flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
-        print(f"Shifted {hex(address)} left once (now {machineState['RAM'][address]})")
+        print(f"Shifted {hex(address)} left once (now {machineState['MEMORY'][address]})")
 
     machineState["PC"] += 2
 
@@ -81,7 +85,7 @@ def opcode_08(machineState: dict):
     #PHP Implied 1 3
     #stack operation: write to 0x0100 + SP, dec SP
     address = 0x0100 + machineState["SP"]
-    machineState["RAM"][address] = machineState["FLAGS"]
+    machineState["MEMORY"][address] = machineState["FLAGS"]
     machineState["SP"] -= 1
 
     if config.VERBOSE:
@@ -91,7 +95,7 @@ def opcode_08(machineState: dict):
 
 def opcode_09(machineState: dict):
     #ORA IMM 2 2
-    data = machineState["ROM"][machineState["PC"] + 1]
+    data = machineState["MEMORY"][machineState["PC"] + 1]
     machineState["ACC"] = machineState["ACC"] | data
         
     if machineState["ACC"] == 0x0: #zero flag
@@ -136,8 +140,8 @@ def opcode_0a(machineState: dict):
 
 def opcode_0d(machineState: dict):
     #ORA ABS 3 4
-    address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
-    data = machineState["RAM"][address]
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
+    data = machineState["MEMORY"][address]
     machineState["ACC"] = machineState["ACC"] | data
         
     if machineState["ACC"] == 0x0: #zero flag
@@ -157,8 +161,9 @@ def opcode_0d(machineState: dict):
 
 def opcode_0e(machineState: dict):
     #ASL ABS 3 6
-    address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
-    machineState["RAM"][address] *= 2
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
+
+    machineState["MEMORY"][address] *= 2
         
     if machineState["ACC"] > 0xff: #carry flag
         machineState["ACC"] -= 0x100
@@ -187,7 +192,7 @@ def opcode_10(machineState: dict):
     #BPL Relative 2 2
     #if negative flag clear, add offset to PC and resume execution
     if machineState["FLAGS"] & 0b10000000 == 0b00000000:
-        offset = machineState["ROM"][machineState["PC"] + 1]
+        offset = machineState["MEMORY"][machineState["PC"] + 1]
         if offset & 0b10000000 == 0b10000000:
             #offset is negative
             decOffset = offset - 256
@@ -201,25 +206,161 @@ def opcode_10(machineState: dict):
         print(f"Hit jump, but didnt jump because negative flag was not clear")
 
 def opcode_11(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA (IND), Y 2 5
+
+    address = machineState["MEMORY"][machineState["PC"] + 1]
+    finalAddressLowByte = machineState["MEMORY"][address]
+    finalAddressHighByte = machineState["MEMORY"][address+1]
+    newAddress = FromHex(bytes(finalAddressHighByte, finalAddressLowByte)) + machineState["Y"]
+    data = machineState["MEMORY"][newAddress]
+
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
 
 def opcode_15(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA ZP,X 2 5
+
+    address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
+    data = machineState["MEMORY"][address]
+    
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
 
 def opcode_16(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ASL ZP,X 2 6
+
+    address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
+
+    machineState["MEMORY"][address] *= 2
+        
+    if machineState["ACC"] > 0xff: #carry flag
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Shifted {hex(address)} left once (now {machineState['MEMORY'][address]})")
+    
+    machineState["PC"] += 2
 
 def opcode_18(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #CLC Implied 1 2
+    machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+
+    if config.VERBOSE:
+        print("Cleared carry bit of processor flags")
+
+    machineState["PC"] += 1
 
 def opcode_19(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA ABS,Y 3 4
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["Y"]
+    data = machineState["MEMORY"][address]
+
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 3
 
 def opcode_1d(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ORA ABS,X 3 4
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
+    data = machineState["MEMORY"][address]
+
+    machineState["ACC"] = machineState["ACC"] | data
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 3
 
 def opcode_1e(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
+    #ASL ABS,X 3 4
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
+
+    machineState["MEMORY"][address] *= 2
+        
+    if machineState["ACC"] > 0xff: #carry flag
+        machineState["ACC"] -= 0x100
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+        
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000        
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Shifted {hex(address)} left once (now {machineState['MEMORY'][address]})")
+    
+    machineState["PC"] += 3
 
 
 def opcode_20(machineState: dict):
@@ -345,7 +486,7 @@ def opcode_61(machineState: dict):
 
 def opcode_65(machineState: dict):
     #ADC (ZP) 2 3
-    data = machineState["RAM"][machineState["ROM"][machineState["PC"]+1]]
+    data = machineState["MEMORY"][machineState["MEMORY"][machineState["PC"]+1]]
     machineState["ACC"] += data
 
     if machineState["ACC"] > 0xff: #carry flag
@@ -379,7 +520,7 @@ def opcode_68(machineState: dict):
 
 def opcode_69(machineState: dict):
     #ADC IMM 2 2
-    data = machineState["ROM"][machineState["PC"]+1]
+    data = machineState["MEMORY"][machineState["PC"]+1]
     machineState["ACC"] += data
 
     if machineState["ACC"] > 0xff: #carry flag
@@ -450,8 +591,8 @@ def opcode_84(machineState: dict):
 def opcode_85(machineState: dict):
     #STA (ZP) 2 3
     data = machineState["ACC"]
-    location = machineState["ROM"][machineState["PC"]+1]    
-    machineState["RAM"][location] = data
+    location = machineState["MEMORY"][machineState["PC"]+1]    
+    machineState["MEMORY"][location] = data
 
     if config.VERBOSE:
         print(f"Set memory at {hex(location)} to {hex(data)}")
@@ -472,8 +613,8 @@ def opcode_8c(machineState: dict):
 
 def opcode_8d(machineState: dict):
     #STA ABS 3 4
-    address = FromHex(machineState["ROM"][machineState["PC"]+1:machineState["PC"]+3])
-    machineState["RAM"][address] = machineState["ACC"]
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
+    machineState["MEMORY"][address] = machineState["ACC"]
     machineState["PC"] += 3
     if config.VERBOSE:
         print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
@@ -535,7 +676,7 @@ def opcode_a8(machineState: dict):
 
 def opcode_a9(machineState: dict):
     # LDA IMM 2 2
-    data = machineState["ROM"][machineState["PC"]+1]
+    data = machineState["MEMORY"][machineState["PC"]+1]
     machineState["ACC"] = data
     
     if config.VERBOSE:

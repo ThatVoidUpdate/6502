@@ -7,8 +7,7 @@ NMI_VECTOR = 0xfffa
 RESET_VECTOR = 0xfffc
 IRQ_VECTOR = 0xfffe
 
-machineState = {"ROM":[], 
-                "RAM":[0x0]*0x10000, 
+machineState = {"MEMORY":[0x0]*0x10000,
                 "PC":0x00,
                 "X": 0x00,
                 "Y": 0x00,
@@ -18,21 +17,26 @@ machineState = {"ROM":[],
 
 
 with open("rom.bin", "rb") as romFile:
-    machineState["ROM"] = romFile.read()
+    rom = romFile.read()
 
 #print(hex(len(machineState["rom"])))
 
 #verify rom is correct
-if len(machineState["ROM"]) != 0x10000:
+if len(rom) != 0x8000:
     print("Rom has an invalid length")
     exit()
 
-machineState["PC"] = FromHex(machineState["ROM"][RESET_VECTOR:RESET_VECTOR+2])
+machineState["MEMORY"][0x8000:] = rom
 
-print(f"Reset vector: {machineState['PC']}")
+print(hex(len(rom)))
+#print(machineState["MEMORY"][0xff00:0xffff])
+
+machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2])
+
+print(f"Reset vector: {hex(machineState['PC'])}")
 
 while True:
-    instruction = machineState["ROM"][machineState["PC"]]
+    instruction = machineState["MEMORY"][machineState["PC"]]
     
     #print(hex(instruction))
 
