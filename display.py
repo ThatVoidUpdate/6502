@@ -43,7 +43,6 @@ class Display:
 
                     self.screenRects[y*32+x].setFill(colour)
                     self.screenRects[y*32+x].setOutline(colour)
-                    #self.screenRects[y*32+x].draw(self.screen)
         self.oldScreenMemory = screenMemory
 
     def Quit(self):
