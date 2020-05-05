@@ -19,30 +19,38 @@ colours = {
     0xf: graphics.color_rgb(255, 255, 255),
 }
 
+
+#32 x 32 screen = 1024 bytes of screen ram
+#256 bytes of character rom
+
 class Display:
     def __init__(self):
         self.screen = graphics.GraphWin("Memory view", 32*8, 32*8)
-        self.screenRects = []
         self.oldScreenMemory = [0]*(0x600-0x200)
-        for y in range(0, 32):
-            for x in range(0, 32):
-                colour = colours[0]
-                rect = graphics.Rectangle(graphics.Point(x*8, y*8), graphics.Point((x+1)*8, (y+1)*8))
-                rect.setFill(colour)
-                rect.setOutline(colour)
-                rect.draw(self.screen)
-                self.screenRects.append(rect)
+        colour = colours[0]
+        rect = graphics.Rectangle(graphics.Point(0,0), graphics.Point(32*8, 32*8))
+        rect.setFill(colour)
+        rect.setOutline(colour)
+        rect.draw(self.screen)
 
     def UpdateScreen(self, machineState: list):
         screenMemory = machineState["MEMORY"][0x200:0x600]
+
         for y in range(0, 32):
             for x in range(0, 32):
                 if screenMemory[y*32+x] != self.oldScreenMemory[y*32+x]:
-                    value = screenMemory[y * 32 + x] % 16
-                    colour = colours[value]
+                    CharacterOffset = screenMemory[y * 32 + x] * 8
 
-                    self.screenRects[y*32+x].setFill(colour)
-                    self.screenRects[y*32+x].setOutline(colour)
+                    for line in range(8):
+                        data = machineState["MEMORY"][0x8000 + CharacterOffset + line]
+                        for i in range(8):
+                            bit = data >> (8-i) & 1
+
+                            if bit == 1:
+                                self.screen.plotPixel(x * 8 + i, y * 8 + line, color="white")
+                            else:
+                                self.screen.plotPixel(x * 8 + i, y * 8 + line, color="black")
+
         self.oldScreenMemory = screenMemory
 
     def Quit(self):

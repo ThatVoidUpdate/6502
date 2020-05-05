@@ -33,6 +33,8 @@ machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2]
 
 print(f"Reset vector: {hex(machineState['PC'])}")
 
+print(machineState["MEMORY"][0x8000:0x8005])
+
 screen = display.Display()
 
 while True:
