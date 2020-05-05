@@ -1,9 +1,9 @@
 # 6502
 
-#TODO
+# TODO
 check exactly how BRK works, I may have implemented it wrong
 
-#Example Implementation
+# Example Implementation
 To make it easier to test, I have attached a graphical display to the cpu, and mapped some memory locations
 
 Memory map:
