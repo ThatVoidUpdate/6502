@@ -28,7 +28,7 @@ class Display:
         self.screen = graphics.GraphWin("Memory view", 32*8, 32*8)
         self.oldScreenMemory = [0]*(0x600-0x200)
         colour = colours[0]
-        rect = graphics.Rectangle(graphics.Point(0,0), graphics.Point(32*8, 32*8))
+        rect = graphics.Rectangle(graphics.Point(0, 0), graphics.Point(32*8, 32*8))
         rect.setFill(colour)
         rect.setOutline(colour)
         rect.draw(self.screen)
