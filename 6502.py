@@ -46,5 +46,3 @@ while True:
         instructions.switch_table[instruction](machineState)
 
     screen.UpdateScreen(machineState)
-
-    #input()

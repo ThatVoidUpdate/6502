@@ -1182,8 +1182,21 @@ def opcode_86(machineState: dict):
     input()
 
 def opcode_88(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    input()
+    #DEY Implied 1 2
+    machineState["Y"] -= 1
+
+    if machineState["Y"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["Y"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    machineState["PC"] += 1
+
 
 def opcode_8a(machineState: dict):
     #TXA Implied 1 2
@@ -1279,9 +1292,15 @@ def opcode_9a(machineState: dict):
     input()
 
 def opcode_9d(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    input()
+    #STA ABS,X 3 5
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
 
+    machineState["MEMORY"][address] = machineState["ACC"]
+
+    if config.VERBOSE:
+        print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
+
+    machineState["PC"] += 3
 
 def opcode_a0(machineState: dict):
     #LDY IMM 2 2
