@@ -1849,3 +1849,5 @@ switch_table = {
     0xfd: opcode_fd,
     0xfe: opcode_fe
 }
+
+#7582 ♥
