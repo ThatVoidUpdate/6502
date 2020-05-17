@@ -1016,10 +1016,10 @@ def opcode_50(machineState: dict):
             decOffset = offset
         machineState["PC"] += decOffset + 2
         if config.VERBOSE:
-            print(f"Jumped to {hex(machineState['PC'])} because overflow flag was clear")
+            print(f"Jumped to {hex(machineState['PC'])} because carry flag was clear")
     else:
         machineState["PC"] += 2
-        print(f"Hit jump, but didnt jump because overflow flag was not clear")
+        print(f"Hit jump, but didnt jump because carry flag was not clear")
 
 
 
@@ -1069,7 +1069,7 @@ def opcode_55(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
 
     if config.VERBOSE:
-        print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+        print(f"Logical OR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
     machineState["PC"] += 2
 
@@ -1105,6 +1105,10 @@ def opcode_58(machineState: dict):
     #CLI Implied 1 2
 
     machineState["FLAGS"] = machineState["FLAGS"] & 0b11111011
+
+    if config.VERBOSE:
+        print(f"Cleared Interrupt flag")
+
     machineState["PC"] += 1
 
 
@@ -1446,8 +1450,13 @@ def opcode_99(machineState: dict):
 
 
 def opcode_9a(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #TXS Implied 1 2
+    machineState["SP"] = machineState["X"]
+
+    if config.VERBOSE:
+        print(f"Transferred X register to stack pointer")
+
+    machineState["PC"] += 1
 
 def opcode_9d(machineState: dict):
     #STA ABS,X 3 5
@@ -1712,8 +1721,15 @@ def opcode_d6(machineState: dict):
     exit()
 
 def opcode_d8(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #CLD Implied 1 2
+
+    machineState["FLAGS"] = machineState["FLAGS"] & 0b11110111
+
+    if config.VERBOSE:
+        print(f"Cleared Decimal flag")
+
+    machineState["PC"] += 1
+
 
 def opcode_d9(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")

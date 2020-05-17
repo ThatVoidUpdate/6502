@@ -26,6 +26,7 @@ machineState = {"MEMORY":[0x0]*0x10000,
 with open("rom.bin", "rb") as romFile:
     rom = romFile.read()
 
+
 #verify rom is correct
 if len(rom) != 0x8000:
     print("Rom has an invalid length")
@@ -51,7 +52,7 @@ while True:
     #Get the instruction at the location of the program counter
     instruction = machineState["MEMORY"][machineState["PC"]]
 
-    #print(hex(instruction))
+    print(hex(instruction))
 
     #If the instruction is a vlid instruction
     if instruction in instructions.switch_table:
