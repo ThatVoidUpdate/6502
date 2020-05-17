@@ -718,7 +718,7 @@ def opcode_36(machineState: dict):
     machineState["PC"] += 2
 
 def opcode_38(machineState: dict):
-    #CLC Implied 1 2
+    #SEC Implied 1 2
     machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
 
     if config.VERBOSE:
@@ -944,7 +944,7 @@ def opcode_4a(machineState: dict):
     if config.VERBOSE:
         print(f"Logical shift right of ACC")
 
-    machineState["PC"] += 2
+    machineState["PC"] += 1
 
 def opcode_4c(machineState: dict):
     #JMP ABS 3 3
@@ -974,7 +974,7 @@ def opcode_4d(machineState: dict):
     if config.VERBOSE:
         print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
 
-    machineState["PC"] += 2
+    machineState["PC"] += 3
 
 def opcode_4e(machineState: dict):
     #LSR ABS 3 6
@@ -1000,40 +1000,189 @@ def opcode_4e(machineState: dict):
     if config.VERBOSE:
         print(f"Logical shift right on {hex(address)}")
 
-    machineState["PC"] += 2
+    machineState["PC"] += 3
 
 
 def opcode_50(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #BVC Relative 2 2
+
+
+    if machineState["FLAGS"] & 0b01000000 == 0b00000000:
+        offset = machineState["MEMORY"][machineState["PC"] + 1]
+        if offset & 0b10000000 == 0b10000000:
+            #offset is negative
+            decOffset = offset - 256
+        else:
+            decOffset = offset
+        machineState["PC"] += decOffset + 2
+        if config.VERBOSE:
+            print(f"Jumped to {hex(machineState['PC'])} because overflow flag was clear")
+    else:
+        machineState["PC"] += 2
+        print(f"Hit jump, but didnt jump because overflow flag was not clear")
+
+
 
 def opcode_51(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #EOR (IND),Y 2 5
+
+    address = machineState["MEMORY"][machineState["PC"] + 1]
+    finalAddressLowByte = machineState["MEMORY"][address]
+    finalAddressHighByte = machineState["MEMORY"][address+1]
+    newAddress = FromHex(bytes(finalAddressHighByte, finalAddressLowByte)) + machineState["Y"]
+    data = machineState["MEMORY"][newAddress]
+
+    machineState["ACC"] = machineState["ACC"] ^ data
+
+    if machineState["ACC"] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
+
 
 def opcode_55(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #EOR ZP,X 2 4
+
+    address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
+    data = machineState["MEMORY"][address]
+
+    machineState["ACC"] = machineState["ACC"] ^ data
+
+    if machineState["ACC"] == 0b00000000:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 2
+
+
 
 def opcode_56(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #LSR ZP,X 2 6
+    address = machineState["MEMORY"][machineState["PC"] + 1] + machineState["X"]
+
+    if machineState["MEMORY"][address] & 0b1:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+
+    machineState["MEMORY"][address] = machineState["MEMORY"][address] >> 1
+
+    if machineState["MEMORY"][address] == 0b00000000:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["MEMORY"][address] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical shift right on {hex(address)}")
+
+    machineState["PC"] += 2
 
 def opcode_58(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #CLI Implied 1 2
+
+    machineState["FLAGS"] = machineState["FLAGS"] & 0b11111011
+    machineState["PC"] += 1
+
 
 def opcode_59(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #EOR ABS,Y 3 4
+
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["Y"]
+    data = machineState["MEMORY"][address]
+
+    machineState["ACC"] = machineState["ACC"] ^ data
+
+    if machineState["ACC"] == 0b00000000:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 3
+
 
 def opcode_5d(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #EOR ABS,X 3 4
+
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
+    data = machineState["MEMORY"][address]
+
+    machineState["ACC"] = machineState["ACC"] ^ data
+
+    if machineState["ACC"] == 0b00000000:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["ACC"] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical XOR ACC with {hex(data)} (now {hex(machineState['ACC'])})")
+
+    machineState["PC"] += 3
+
+
 
 def opcode_5e(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #LSR ABS,X 3 7
+
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
+
+    if machineState["MEMORY"][address] & 0b1:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+
+    machineState["MEMORY"][address] = machineState["MEMORY"][address] >> 1
+
+    if machineState["MEMORY"][address] == 0b00000000:
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["MEMORY"][address] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Logical shift right on {hex(address)}")
+
+    machineState["PC"] += 3
 
 
 def opcode_60(machineState: dict):
