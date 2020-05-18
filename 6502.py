@@ -52,12 +52,17 @@ while True:
     #Get the instruction at the location of the program counter
     instruction = machineState["MEMORY"][machineState["PC"]]
 
-    print(hex(instruction))
+    #print(f"Current Opcode: {hex(instruction)}") #Show opcode
+    #print(f"Next memory: {' '.join([hex(x) for x in machineState['MEMORY'][machineState['PC']:machineState['PC']+16]])}") #Preview of next instructions
+    #print(f"PC: {hex(machineState['PC'])}")
 
-    #If the instruction is a vlid instruction
+    #If the instruction is a valid instruction
     if instruction in instructions.switch_table:
         #Then call it, passing in the current state of the machine
         instructions.switch_table[instruction](machineState)
+    else:
+        print(f"Invalid instruction: {instruction}. Not in instruction table")
+        exit()
 
     #Update the screen
     screen.UpdateScreen(machineState)
