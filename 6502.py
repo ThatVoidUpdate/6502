@@ -13,7 +13,7 @@ RESET_VECTOR = 0xfffc #Position of the reset vector in memory, which is where ex
 IRQ_VECTOR = 0xfffe #Position of the IRQ vector in memory
 
 #This is a dictionary holding the state of the machine, such as the memory, program counter and registers
-machineState = {"MEMORY":[0x0]*0x10000,
+machineState = {"MEMORY":[0x00]*0x10000,
                 "PC":0x00,
                 "X": 0x00,
                 "Y": 0x00,
@@ -40,7 +40,7 @@ machineState["MEMORY"][0x8000:] = rom
 #Get the Reset vector, and set the program counter to that location, to begin execution from that memory address
 machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2])
 
-#print(f"Reset vector: {hex(machineState['PC'])}")
+print(f"Reset vector: {hex(machineState['PC'])}")
 
 #print(machineState["MEMORY"][0x8000:0x8005])
 
@@ -52,9 +52,10 @@ while True:
     #Get the instruction at the location of the program counter
     instruction = machineState["MEMORY"][machineState["PC"]]
 
-    #print(f"Current Opcode: {hex(instruction)}") #Show opcode
+    print(f"PC: {hex(machineState['PC'])}, ", end="")
+    print(f"Current Opcode: {hex(instruction)}, ", end="") #Show opcode
     #print(f"Next memory: {' '.join([hex(x) for x in machineState['MEMORY'][machineState['PC']:machineState['PC']+16]])}") #Preview of next instructions
-    #print(f"PC: {hex(machineState['PC'])}")
+    
 
     #If the instruction is a valid instruction
     if instruction in instructions.switch_table:

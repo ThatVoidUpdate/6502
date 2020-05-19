@@ -1,5 +1,5 @@
 """
-This file contains all the code for the individual instructions of the 6502 processor. 
+This file contains all the code for the individual instructions of the 6502 processor.
 The functions are named for their corresponding hex opcode, to make calling them easier to keep track of
 """
 
@@ -98,7 +98,7 @@ def opcode_06(machineState: dict):
 
 def opcode_08(machineState: dict):
     #PHP Implied 1 3
-    
+
     address = 0x0100 + machineState["SP"]
     machineState["MEMORY"][address] = machineState["FLAGS"]
     machineState["SP"] -= 1
@@ -1329,7 +1329,7 @@ def opcode_71(machineState: dict):
 
     machineState["PC"] += 2
 
-     
+
 
 def opcode_75(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -1757,8 +1757,30 @@ def opcode_c8(machineState: dict):
     machineState["PC"] += 1
 
 def opcode_c9(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #CMP Immidiate 2 2
+
+    data = machineState["MEMORY"][machineState["PC"] + 1]
+
+    if machineState["ACC"] >= data: #carry flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000001
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111110
+
+    if machineState["ACC"] == data: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if (machineState["ACC"]-data) & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Compared ACC to {hex(data)}")
+    
+    machineState["PC"] += 2
+
 
 def opcode_ca(machineState: dict):
     #DEX Implied 1 2
@@ -1809,7 +1831,7 @@ def opcode_d0(machineState: dict):
             decOffset = offset
         machineState["PC"] += decOffset + 2
         if config.VERBOSE:
-            print(f"Jumped to {hex(machineState['PC'])} because zero flag was clear")
+            print(f"Jumped to {hex(machineState['PC'])} because zero flag was clear (relative jump by {decOffset})")
     else:
         machineState["PC"] += 2
         print(f"Hit jump, but didnt jump because zero flag was not clear")
