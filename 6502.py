@@ -45,7 +45,7 @@ print(f"Reset vector: {hex(machineState['PC'])}")
 #print(machineState["MEMORY"][0x8000:0x8005])
 
 #Initialise a new screen
-screen = display.Display()
+#screen = display.Display()
 
 #Repeat forever
 while True:
@@ -55,7 +55,7 @@ while True:
     print(f"PC: {hex(machineState['PC'])}, ", end="")
     print(f"Current Opcode: {hex(instruction)}, ", end="") #Show opcode
     #print(f"Next memory: {' '.join([hex(x) for x in machineState['MEMORY'][machineState['PC']:machineState['PC']+16]])}") #Preview of next instructions
-    
+
 
     #If the instruction is a valid instruction
     if instruction in instructions.switch_table:
@@ -66,4 +66,4 @@ while True:
         exit()
 
     #Update the screen
-    screen.UpdateScreen(machineState)
+    #screen.UpdateScreen(machineState)

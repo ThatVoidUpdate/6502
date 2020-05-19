@@ -8,6 +8,7 @@ This is a set of code used for my own reference to make writing the instructions
 
 ### ZP
 ```python
+    address = machineState["MEMORY"][machineState["PC"] + 1]
     data = machineState["MEMORY"][machineState["MEMORY"][machineState["PC"] + 1]]
 ```
 

@@ -220,7 +220,8 @@ def opcode_10(machineState: dict):
             print(f"Jumped to {hex(machineState['PC'])} because negative flag was clear")
     else:
         machineState["PC"] += 2
-        print(f"Hit jump, but didnt jump because negative flag was not clear")
+        if config.VERBOSE:
+            print(f"Hit jump, but didnt jump because negative flag was not clear")
 
 def opcode_11(machineState: dict):
     #ORA (IND), Y 2 5
@@ -384,14 +385,17 @@ def opcode_20(machineState: dict):
     #JSR ABS 3 6
     address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
 
-    machineState["MEMORY"][0x0100 + machineState["SP"]] = machineState["PC"] + 3
+    machineState["PC"] += 3
+
+    machineState["MEMORY"][0x0100 + machineState["SP"]] = machineState["PC"] >> 8
+    machineState["SP"] -= 1
+    machineState["MEMORY"][0x0100 + machineState["SP"]] = machineState["PC"] & 0xFF
     machineState["SP"] -= 1
 
     machineState["PC"] = address
 
     if config.VERBOSE:
         print(f"Jumped to subroutine {hex(address)}")
-
 
 
 def opcode_21(machineState: dict):
@@ -647,7 +651,8 @@ def opcode_30(machineState: dict):
             print(f"Jumped to {hex(machineState['PC'])} because negative flag was set")
     else:
         machineState["PC"] += 2
-        print(f"Hit jump, but didnt jump because negative flag was not set")
+        if config.VERBOSE:
+            print(f"Hit jump, but didnt jump because negative flag was not set")
 
 def opcode_31(machineState: dict):
     #AND (IND),Y 2 6
@@ -1025,7 +1030,8 @@ def opcode_50(machineState: dict):
             print(f"Jumped to {hex(machineState['PC'])} because carry flag was clear")
     else:
         machineState["PC"] += 2
-        print(f"Hit jump, but didnt jump because carry flag was not clear")
+        if config.VERBOSE:
+            print(f"Hit jump, but didnt jump because carry flag was not clear")
 
 
 
@@ -1196,8 +1202,20 @@ def opcode_5e(machineState: dict):
 
 
 def opcode_60(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #RTS Implied 1 6
+
+    #pull pc from stack
+    #inc SP
+    pc = 0
+    machineState["SP"] += 1
+    pc += machineState["MEMORY"][0x0100 + machineState["SP"]]
+    machineState["SP"] += 1
+    pc += machineState["MEMORY"][0x0100 + machineState["SP"]] << 8
+
+    machineState["PC"] = pc
+
+    if config.VERBOSE:
+        print(f"Returned from subroutine to {hex(pc)}")
 
 def opcode_61(machineState: dict):
     print("INSTRUCTION NOT IMPLEMENTED")
@@ -1361,34 +1379,45 @@ def opcode_81(machineState: dict):
     exit()
 
 def opcode_84(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #STY (ZP) 2 3
+
+    address = machineState["MEMORY"][machineState["PC"]+1]
+    machineState["MEMORY"][address] = machineState["Y"]
+
+    if config.VERBOSE:
+        print(f"Stored Y into memory at {hex(address)}")
+
+    machineState["PC"] += 2
+
 
 def opcode_85(machineState: dict):
     #STA (ZP) 2 3
-    data = machineState["ACC"]
-    location = machineState["MEMORY"][machineState["PC"]+1]
-    machineState["MEMORY"][location] = data
+
+    address = machineState["MEMORY"][machineState["PC"]+1]
+    machineState["MEMORY"][address] = machineState["ACC"]
 
     if config.VERBOSE:
-        print(f"Set memory at {hex(location)} to {hex(data)}")
+        print(f"Stored ACC into memory at {hex(address)}")
 
     machineState["PC"] += 2
 
 def opcode_86(machineState: dict):
     #STX (ZP) 2 3
 
-    location = machineState["MEMORY"][machineState["PC"]+1]
-    machineState["MEMORY"][location] = machineState["X"]
+    address = machineState["MEMORY"][machineState["PC"]+1]
+    machineState["MEMORY"][address] = machineState["X"]
 
     if config.VERBOSE:
-        print(f"Set memory at {hex(location)} to {hex(machineState['X'])}")
+        print(f"Stored X into memory at {hex(address)}")
 
     machineState["PC"] += 2
 
 def opcode_88(machineState: dict):
     #DEY Implied 1 2
     machineState["Y"] -= 1
+    
+    if machineState["Y"] < 0:
+        machineState["Y"] += 0x100
 
     if machineState["Y"] == 0x0: #zero flag
         machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
@@ -1399,6 +1428,9 @@ def opcode_88(machineState: dict):
         machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
     else:
         machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Decremented Y to {hex(machineState['Y'])}")
 
     machineState["PC"] += 1
 
@@ -1423,21 +1455,35 @@ def opcode_8a(machineState: dict):
     machineState["PC"] += 1
 
 def opcode_8c(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #STY ABS 3 4
+
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
+    machineState["MEMORY"][address] = machineState["Y"]
+
+    if config.VERBOSE:
+        print(f"Stored Y into memory at {hex(address)}")
+
+    machineState["PC"] += 3
 
 def opcode_8d(machineState: dict):
     #STA ABS 3 4
     address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
     machineState["MEMORY"][address] = machineState["ACC"]
     if config.VERBOSE:
-        print(f"Wrote to ram at address {hex(address)}: {hex(machineState['ACC'])}")
+        print(f"Stored ACC into memory at {hex(address)}")
 
     machineState["PC"] += 3
 
 def opcode_8e(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #STX ABS 3 4
+
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3])
+    machineState["MEMORY"][address] = machineState["X"]
+
+    if config.VERBOSE:
+        print(f"Stored X into memory at {hex(address)}")
+
+    machineState["PC"] += 3
 
 
 def opcode_90(machineState: dict):
@@ -1448,13 +1494,13 @@ def opcode_91(machineState: dict):
     #STA (IND),Y 2 6
 
     address = machineState["MEMORY"][machineState["PC"] + 1]
-    finalAddressLowByte = machineState["MEMORY"][address]
-    finalAddressHighByte = machineState["MEMORY"][address+1]
-    newAddress = FromHex(bytes([finalAddressHighByte, finalAddressLowByte])) + machineState["Y"]
+    dereferenced = machineState["MEMORY"][address]
+    newAddress = dereferenced + machineState["Y"]
 
     machineState["MEMORY"][newAddress] = machineState["ACC"]
 
-    print(f"Stored ACC at address {hex(newAddress)}")
+    if config.VERBOSE:
+        print(f"Stored ACC at address {hex(newAddress)}")
 
     machineState["PC"] += 2
 
@@ -1731,8 +1777,24 @@ def opcode_c5(machineState: dict):
     exit()
 
 def opcode_c6(machineState: dict):
-    print("INSTRUCTION NOT IMPLEMENTED")
-    exit()
+    #DEC ZP 2 5
+    address = machineState["MEMORY"][machineState["PC"] + 1]
+    machineState["MEMORY"][address] -= 1
+
+    if machineState["MEMORY"][address] == 0x0: #zero flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b00000010
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b11111101
+
+    if machineState["MEMORY"][address] & 0b10000000 == 0b10000000: #negative flag
+        machineState["FLAGS"] = machineState["FLAGS"] | 0b10000000
+    else:
+        machineState["FLAGS"] = machineState["FLAGS"] & 0b01111111
+
+    if config.VERBOSE:
+        print(f"Decremented memory at {hex(address)}")
+
+    machineState["PC"] += 2
 
 def opcode_c8(machineState: dict):
     #INY IMPLIED 1 2
@@ -1778,7 +1840,7 @@ def opcode_c9(machineState: dict):
 
     if config.VERBOSE:
         print(f"Compared ACC to {hex(data)}")
-    
+
     machineState["PC"] += 2
 
 
@@ -1834,7 +1896,8 @@ def opcode_d0(machineState: dict):
             print(f"Jumped to {hex(machineState['PC'])} because zero flag was clear (relative jump by {decOffset})")
     else:
         machineState["PC"] += 2
-        print(f"Hit jump, but didnt jump because zero flag was not clear")
+        if config.VERBOSE:
+            print(f"Hit jump, but didnt jump because zero flag was not clear")
 
 
 def opcode_d1(machineState: dict):
