@@ -9,7 +9,7 @@ This is a set of code used for my own reference to make writing the instructions
 ### ZP
 ```python
     address = machineState["MEMORY"][machineState["PC"] + 1]
-    data = machineState["MEMORY"][machineState["MEMORY"][machineState["PC"] + 1]]
+    data = machineState["MEMORY"][address]
 ```
 
 ### ZP,X
@@ -26,10 +26,14 @@ This is a set of code used for my own reference to make writing the instructions
 
 ### Absolute,X
 ```python
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["X"]
+    data = machineState["MEMORY"][address]
 ```
 
 ### Absolute,Y
 ```python
+    address = FromHex(machineState["MEMORY"][machineState["PC"]+1:machineState["PC"]+3]) + machineState["Y"]
+    data = machineState["MEMORY"][address]
 ```
 
 ### Indirect,X

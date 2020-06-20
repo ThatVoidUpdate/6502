@@ -8,6 +8,7 @@ def FromHex(hexa: bytes) -> int:
     """
     return int.from_bytes(hexa, byteorder="little")
 
+
 NMI_VECTOR = 0xfffa #Position of the non-maskable interrupt vector in memory
 RESET_VECTOR = 0xfffc #Position of the reset vector in memory, which is where execution will start when the processor is powered on
 IRQ_VECTOR = 0xfffe #Position of the IRQ vector in memory
@@ -27,13 +28,8 @@ with open("rom.bin", "rb") as romFile:
     rom = romFile.read()
 
 
-#verify rom is correct
-if len(rom) != 0x8000:
-    print("Rom has an invalid length")
-    exit()
-
-#Move the rom file into memory at location 0x8000
-machineState["MEMORY"][0x8000:] = rom
+#Move the rom file into memory at location 0x0000
+machineState["MEMORY"][0x0000:] = rom
 
 #print(hex(len(rom)))
 
@@ -41,8 +37,6 @@ machineState["MEMORY"][0x8000:] = rom
 machineState["PC"] = FromHex(machineState["MEMORY"][RESET_VECTOR:RESET_VECTOR+2])
 
 print(f"Reset vector: {hex(machineState['PC'])}")
-
-#print(machineState["MEMORY"][0x8000:0x8005])
 
 #Initialise a new screen
 #screen = display.Display()
@@ -62,8 +56,7 @@ while True:
         #Then call it, passing in the current state of the machine
         instructions.switch_table[instruction](machineState)
     else:
-        print(f"Invalid instruction: {instruction}. Not in instruction table")
-        exit()
+        instructions.Crash(machineState, "Invalid instruction (not in table)")
 
     #Update the screen
     #screen.UpdateScreen(machineState)
